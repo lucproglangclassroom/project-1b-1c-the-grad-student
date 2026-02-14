@@ -42,4 +42,9 @@ project/project/
 
 # SBT configuration files
 # remove if specific version of SBT is required
-project/build.properties 
+project/build.properties
+
+# Test data files (large)
+lesmis*.txt
+testinput.txt
+test-large.txt 
