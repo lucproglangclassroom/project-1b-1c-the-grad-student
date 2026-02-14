@@ -31,4 +31,4 @@ object Main:
     println("Waiting for input... (processing logic to be implemented)")
 
   def main(args: Array[String]): Unit =
-    ParserForMethods(this).runOrExit(args)
+    ParserForMethods(this).runOrExit(args): Unit

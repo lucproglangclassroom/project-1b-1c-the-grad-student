@@ -28,9 +28,10 @@ class WordCloud(cloudSize: Int):
       case Some(count) if count > 1 =>
         frequencies(word) = count - 1
       case Some(_) =>
-        frequencies.remove(word)
+        frequencies.remove(word): Unit
       case None =>
         // Word not in map, do nothing
+        ()
 
   /**
    * Returns the current word cloud as a formatted string.
