@@ -134,14 +134,15 @@ class TopWordsProcessorSpec extends AnyWordSpec with Matchers:
         )
 
         // Process: a b c aa bb cc aa bb aa bb
+        // Short words (a, b, c) are filtered out, so actual processing: aa bb cc aa bb aa bb
         val words = Iterator("a", "b", "c", "aa", "bb", "cc", "aa", "bb", "aa", "bb")
         processor.processWords(words)
 
-        // First output after 5th word (cc)
+        // After windowSize=5 words processed, we get 3 outputs (words 5, 6, 7)
         val outputs = observer.getOutputs
-        outputs.size should be >= 5
+        outputs.size shouldBe 3
 
-        // After processing "aa bb cc aa bb": bb:2, aa:2, cc:1
+        // After processing first 5 words "aa bb cc aa bb": window=[aa, bb, cc, aa, bb]
         outputs(0) shouldBe "aa: 2 bb: 2 cc: 1"
       }
 
