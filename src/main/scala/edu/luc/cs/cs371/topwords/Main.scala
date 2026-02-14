@@ -23,12 +23,18 @@ object Main:
     require(lengthAtLeast > 0, "lengthAtLeast must be positive")
     require(windowSize > 0, "windowSize must be positive")
 
-    // TODO: Implement main processing logic in future steps
-    println("TopWords initialized with:")
-    println(s"  Cloud size: $cloudSize")
-    println(s"  Min length: $lengthAtLeast")
-    println(s"  Window size: $windowSize")
-    println("Waiting for input... (processing logic to be implemented)")
+    // Read words from stdin and split by non-alphanumeric characters
+    val lines = scala.io.Source.stdin.getLines
+    val words =
+      import scala.language.unsafeNulls
+      lines.flatMap(l => l.split("(?U)[^\\p{Alpha}0-9']+"))
+
+    // Create processor with console observer
+    val observer = ConsoleObserver()
+    val processor = TopWordsProcessor(lengthAtLeast, windowSize, cloudSize, observer)
+
+    // Process the word stream
+    processor.processWords(words)
 
   def main(args: Array[String]): Unit =
     ParserForMethods(this).runOrExit(args): Unit
