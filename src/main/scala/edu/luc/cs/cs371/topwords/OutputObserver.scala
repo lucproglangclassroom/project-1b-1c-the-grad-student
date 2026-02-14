@@ -15,15 +15,15 @@ trait OutputObserver:
 
 /**
  * Console-based observer that prints word clouds to stdout.
+ * Handles SIGPIPE (broken pipe) by checking for output errors and exiting gracefully.
  */
 class ConsoleObserver extends OutputObserver:
   def notify(wordCloud: String): Unit =
-    try
-      println(wordCloud)
-    catch
-      case _: java.io.IOException =>
-        // Handle broken pipe (SIGPIPE) - exit gracefully
-        System.exit(0)
+    println(wordCloud)
+    // Check for output errors (e.g., broken pipe/SIGPIPE)
+    // Java converts SIGPIPE to IOException, which PrintStream converts to an error flag
+    if System.out.checkError() then
+      sys.exit(0)
 
 /**
  * Test observer that collects word clouds in memory for verification.
