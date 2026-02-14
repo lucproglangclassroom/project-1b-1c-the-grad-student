@@ -132,4 +132,18 @@ class WordCloudSpec extends AnyWordSpec with Matchers:
         cloud.getTopWords() shouldBe "medium: 2 high: 1 low: 1"
       }
     }
+
+    "validation" should {
+      "reject negative cloudSize" in {
+        an[IllegalArgumentException] should be thrownBy {
+          WordCloud(-1)
+        }
+      }
+
+      "reject zero cloudSize" in {
+        an[IllegalArgumentException] should be thrownBy {
+          WordCloud(0)
+        }
+      }
+    }
   }

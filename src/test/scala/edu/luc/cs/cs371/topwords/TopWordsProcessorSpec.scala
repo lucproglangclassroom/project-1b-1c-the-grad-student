@@ -218,4 +218,48 @@ class TopWordsProcessorSpec extends AnyWordSpec with Matchers:
         outputs(2) shouldBe "third: 1"
       }
     }
+
+    "validation" should {
+      "reject negative minLength" in {
+        val observer = TestObserver()
+        an[IllegalArgumentException] should be thrownBy {
+          TopWordsProcessor(-1, 10, 10, observer)
+        }
+      }
+
+      "reject zero minLength" in {
+        val observer = TestObserver()
+        an[IllegalArgumentException] should be thrownBy {
+          TopWordsProcessor(0, 10, 10, observer)
+        }
+      }
+
+      "reject negative windowSize" in {
+        val observer = TestObserver()
+        an[IllegalArgumentException] should be thrownBy {
+          TopWordsProcessor(5, -1, 10, observer)
+        }
+      }
+
+      "reject zero windowSize" in {
+        val observer = TestObserver()
+        an[IllegalArgumentException] should be thrownBy {
+          TopWordsProcessor(5, 0, 10, observer)
+        }
+      }
+
+      "reject negative cloudSize" in {
+        val observer = TestObserver()
+        an[IllegalArgumentException] should be thrownBy {
+          TopWordsProcessor(5, 10, -1, observer)
+        }
+      }
+
+      "reject zero cloudSize" in {
+        val observer = TestObserver()
+        an[IllegalArgumentException] should be thrownBy {
+          TopWordsProcessor(5, 10, 0, observer)
+        }
+      }
+    }
   }

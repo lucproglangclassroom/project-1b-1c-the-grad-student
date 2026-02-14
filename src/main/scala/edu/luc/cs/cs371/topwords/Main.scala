@@ -6,6 +6,26 @@ import org.slf4j.LoggerFactory
 object Main:
   private val logger = LoggerFactory.getLogger(getClass)
 
+  /**
+   * Processes lines of text into words and generates word clouds.
+   * Extracted for testability.
+   */
+  def processInputStream(
+    lines: Iterator[String],
+    cloudSize: Int,
+    lengthAtLeast: Int,
+    windowSize: Int,
+    observer: OutputObserver
+  ): Unit =
+    // Split lines into words by non-alphanumeric characters
+    val words =
+      import scala.language.unsafeNulls
+      lines.flatMap(l => l.split("(?U)[^\\p{Alpha}0-9']+"))
+
+    // Create processor and process the word stream
+    val processor = TopWordsProcessor(lengthAtLeast, windowSize, cloudSize, observer)
+    processor.processWords(words)
+
   @main
   def run(
     @arg(short = 'c', doc = "Size of word cloud (number of top words to display)")
@@ -23,18 +43,10 @@ object Main:
     require(lengthAtLeast > 0, "lengthAtLeast must be positive")
     require(windowSize > 0, "windowSize must be positive")
 
-    // Read words from stdin and split by non-alphanumeric characters
+    // Read from stdin and process
     val lines = scala.io.Source.stdin.getLines
-    val words =
-      import scala.language.unsafeNulls
-      lines.flatMap(l => l.split("(?U)[^\\p{Alpha}0-9']+"))
-
-    // Create processor with console observer
     val observer = ConsoleObserver()
-    val processor = TopWordsProcessor(lengthAtLeast, windowSize, cloudSize, observer)
-
-    // Process the word stream
-    processor.processWords(words)
+    processInputStream(lines, cloudSize, lengthAtLeast, windowSize, observer)
 
   def main(args: Array[String]): Unit =
     ParserForMethods(this).runOrExit(args): Unit

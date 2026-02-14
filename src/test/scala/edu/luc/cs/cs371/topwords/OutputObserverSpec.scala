@@ -68,10 +68,20 @@ class OutputObserverSpec extends AnyWordSpec with Matchers:
   }
 
   "A ConsoleObserver" should {
-    "not throw exceptions when notified" in {
+    "write to stdout without errors" in {
       val observer = ConsoleObserver()
       noException should be thrownBy {
         observer.notify("test: 1")
+        observer.notify("hello: 5 world: 3")
+        observer.notify("")
+      }
+    }
+
+    "handle multiple notifications" in {
+      val observer = ConsoleObserver()
+      noException should be thrownBy {
+        for i <- 1 to 10 do
+          observer.notify(s"word: $i")
       }
     }
   }

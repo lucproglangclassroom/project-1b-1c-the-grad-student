@@ -149,4 +149,20 @@ class MovingWindowSpec extends AnyWordSpec with Matchers:
         cloud.size shouldBe 100
       }
     }
+
+    "validation" should {
+      "reject negative windowSize" in {
+        val cloud = WordCloud(10)
+        an[IllegalArgumentException] should be thrownBy {
+          MovingWindow(-1, cloud)
+        }
+      }
+
+      "reject zero windowSize" in {
+        val cloud = WordCloud(10)
+        an[IllegalArgumentException] should be thrownBy {
+          MovingWindow(0, cloud)
+        }
+      }
+    }
   }
